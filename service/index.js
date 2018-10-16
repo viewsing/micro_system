@@ -71,12 +71,21 @@ if (app.get('env') === 'development') {
 
 
 //路由
-app.use('/', router)
+app.use('/api', router)
 
 //单页面应用确保react-router刷新正确路由
 app.get('*', function (req, res) {
   res.send('没有找到')
 });
+
+//错误处理
+app.use(function (err, req, res, next) {
+  console.error(err.stack)
+  res.json({
+    resultCode: 500,
+    resultMsg: err.message || err.text || '未知错误'
+  })
+})
 
 app.listen(config.PORT)
 
