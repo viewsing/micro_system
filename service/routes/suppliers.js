@@ -2,21 +2,37 @@ const router = require('express').Router()
 const Supplier = require('../models').Supplier
 
 router.get('/', function(req, res, next) {
-  Supplier.find({}, function(err, result) {
+  let { pageSize, page, name } = req.query
+  pageSize = parseInt(pageSize, 10)
+  page = parseInt(page, 10)
+  const queryCon = { name: { $regex: name || ''} }
+
+  Supplier.countDocuments(queryCon, function(err, count) {
     if (err) return next(err)
-    res.json(
-      {
+
+    Supplier.find(queryCon)
+    .sort('-createTime')
+    .limit(pageSize)
+    .skip( (page-1) * pageSize )
+    .exec(function(err, result) {
+      if (err) return next(err)
+
+      res.json({
         resultCode: 200,
-        data: result.map(supplier => ({
-          id: supplier._id,
-          name: supplier.name,
-          contactPeople: supplier.contactPeople,
-          contactPhone: supplier.contactPhone,
-          address: supplier.address,
-          mark: supplier.mark
-        }))
-      }
-    )
+        data: {
+          rows: result.map(supplier => ({
+            id: supplier._id,
+            name: supplier.name,
+            contactPeople: supplier.contactPeople,
+            contactPhone: supplier.contactPhone,
+            address: supplier.address,
+            mark: supplier.mark
+          })),
+          count
+        }
+      })
+
+    })
   })
 })
 
@@ -56,7 +72,7 @@ const validateParams = function(req, res, next) {
 
 router.post('/', validateParams, function(req, res, next) {
   const params = req.body
-  Supplier.findOneAndUpdate(req.body.id, { ...params }, function(err, result) {
+  Supplier.findOneAndUpdate(req.body.id, { ...params }, function(err) {
     if (err) return next(err)
     res.json({
       resultCode: 200,
@@ -67,7 +83,7 @@ router.post('/', validateParams, function(req, res, next) {
 
 router.put('/', validateParams, function(req, res, next) {
   const params = req.body
-  Supplier.create({ ...params }, function(err, result) {
+  Supplier.create({ ...params }, function(err) {
     if (err) return next(err)
     res.json({
       resultCode: 200,

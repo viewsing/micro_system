@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2>欢迎光临微仓储管理系统</h2>
+    <h2>微仓储管理系统</h2>
   </div>
 </template>
 

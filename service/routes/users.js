@@ -36,6 +36,11 @@ router.post('/login', function(req, res, next) {
         })
       }
     })
+  } else {
+    res.json({
+      resultCode: 500,
+      resultMsg: '用户名和密码必填'
+    })
   }
 })
 
@@ -83,7 +88,7 @@ router.post('/signIn', function(req, res, next) {
   }
 })
 
-router.get('/logout', function(req, res, next) {
+router.get('/logout', function(req, res) {
   req.session.destroy();
   res.clearCookie(config.cookie_name, { path: '/' });
   res.json({

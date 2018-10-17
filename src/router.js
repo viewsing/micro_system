@@ -11,15 +11,19 @@ export default new Router({
     {
       path: '/',
       name: '首页',
+      meta: {
+        type: 'menu',
+      },
       component: Home
     },
     {
       path: '/supplier',
-      name: '供应商',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+      name: '供应商管理',
+      meta: {
+        type: 'menu',
+        requireAuth: true
+      },
       component: () => import(/* webpackChunkName: "about" */ './views/Supplier.vue')
-    }
+    },
   ]
 })

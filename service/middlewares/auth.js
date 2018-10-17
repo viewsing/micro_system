@@ -1,7 +1,7 @@
 module.exports = {
   isLogin: function(req, res, next) {
     //如果是后端api接口
-    if (/\/api\//.test(req.url)) {
+    if (/\/api\//.test(req.originalUrl)) {
       if (req.session.userInfo && req.session.userInfo.username) {
         next()
       } else {
