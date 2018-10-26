@@ -54,7 +54,6 @@ export default {
     //更新供应商详情数据
     updateDetail (state, payload) {
       state.formItem = {
-        ...state.formItem,
         name: payload.name,
         contactPeople: payload.contactPeople,
         contactPhone: payload.contactPhone,
@@ -62,7 +61,8 @@ export default {
         mark: payload.mark,
         accountName: payload.accountName,
         accountBank: payload.accountBank,
-        accountNo: payload.accountNo
+        accountNo: payload.accountNo,
+        id: payload._id
       }
     },
   },

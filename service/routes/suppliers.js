@@ -75,7 +75,13 @@ const validateParams = function(req, res, next) {
 
 router.post('/', validateParams, function(req, res, next) {
   const params = req.body
-  Supplier.findOneAndUpdate(req.body.id, { ...params }, function(err) {
+  if (!params.id) {
+    res.json({
+      resultCode: 500,
+      resultMsg: '没有找到该用户'
+    })
+  }
+  Supplier.findByIdAndUpdate(req.body.id, { ...params }, function(err) {
     if (err) return next(err)
     res.json({
       resultCode: 200,
@@ -97,6 +103,12 @@ router.put('/', validateParams, function(req, res, next) {
 
 router.delete('/:id', function(req, res, next) {
   const id = req.params.id
+  if (!id) {
+    res.json({
+      resultCode: 500,
+      resultMsg: '参数错误'
+    })
+  } 
   Supplier.remove({ _id: id }, function(err) {
     if (err) return next(err)
     res.json({
