@@ -59,13 +59,19 @@
                 'loading'
             ])
         },
+        beforeCreate () {
+          const userInfo = JSON.parse( localStorage.getItem('userInfo') )
+          if ( userInfo && userInfo.username) {
+            this.$store.commit('updateLogin', true)
+          }
+        },
         created: function() {
             //根据路由自动生成侧边菜单栏数据
             this.$store.commit('updateMenus', this.$router.options.routes)
             this.$store.commit('updateActiveMenu', this.$route)
         },
         watch: {
-            '$route' (to, from) {
+            '$route' (to) {
                 //根据路由信息更新选中菜单项
                 this.$store.commit('updateActiveMenu', to)
             }

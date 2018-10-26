@@ -2,27 +2,27 @@
   <div class="supplier-detail">
     <h2 style="text-align: center;">{{title}}</h2>
     <Row style="margin-top: 2em;">
-
+        <Spin size="large" fix v-if="loading"></Spin>
         <Col span="10">
           <h3>基础资料</h3>
           <Form :model="formItem" :rules="ruleValidate" style="margin-top: 1em;" :label-width="80">
             <FormItem label="供应商名称" prop="name" >
-                <Input v-model="formItem.name" placeholder="供应商名称" :readonly="readonly"></Input>
+                <Input :value="formItem.name" name="name" placeholder="供应商名称" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="联系人" prop="contactPeople">
-                <Input v-model="formItem.contactPeople" placeholder="联系人" :readonly="readonly"></Input>
+                <Input :value="formItem.contactPeople" name="contactPeople" placeholder="联系人" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="联系方式" prop="contactPhone">
-                <Input v-model="formItem.contactPhone" placeholder="联系方式" :readonly="readonly"></Input>
+                <Input :value="formItem.contactPhone" name="contactPhone" placeholder="联系方式" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="地址" prop="address">
-                <Input v-model="formItem.address" placeholder="地址" :readonly="readonly"></Input>
+                <Input :value="formItem.address" name="address" placeholder="地址" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="备注">
-                <Input v-model="formItem.mark" type="textarea" placeholder="备注" :readonly="readonly"></Input>
+                <Input :value="formItem.mark" name="mark" type="textarea" placeholder="备注" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">确定</Button>
+                <Button v-if="type!=='detail'" type="primary" @click="confirm">确定</Button>
                 <Button style="margin-left: 8px" @click="cancel">取消</Button>
             </FormItem>
           </Form>
@@ -32,13 +32,13 @@
           <h3>财务信息</h3>
           <Form :model="formItem" :rules="ruleValidate" style="margin-top: 1em;" :label-width="80">
             <FormItem label="开户名称">
-                <Input v-model="formItem.accountName" placeholder="开户名称" :readonly="readonly"></Input>
+                <Input :value="formItem.accountName" name="accountName" placeholder="开户名称" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="开户银行">
-                <Input v-model="formItem.accountBank" placeholder="开户银行" :readonly="readonly"></Input>
+                <Input :value="formItem.accountBank" name="accountBank" placeholder="开户银行" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
             <FormItem label="开户账号">
-                <Input v-model="formItem.accountNo" placeholder="开户账号" :readonly="readonly"></Input>
+                <Input :value="formItem.accountNo" name="accountNo" placeholder="开户账号" @on-change="updateFormItem" :readonly="readonly"></Input>
             </FormItem>
           </Form>
         </Col>
@@ -47,21 +47,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   data () {
     return {
-      formItem: {
-        name: '',
-        contactPeople: '',
-        contactPhone: '',
-        address: '',
-        mark: '',
-        accountName: '',
-        accountNo: '',
-        accountBank: ''
-      },
       ruleValidate: {
         name: [
             { required: true, message: '供应商名称必填', trigger: 'blur' }
@@ -75,6 +65,20 @@ export default {
         address: [
             { required: true, message: '联系地址必填', trigger: 'blur' }
         ],
+      }
+    }
+  },
+  methods: {
+    ...mapMutations('supplier', ['updateFormItem', 'updateDetail', 'toggleShowDetail']),
+    ...mapActions('supplier', ['getSupplierById', 'putSupplier', 'postSupplier']),
+    cancel () {
+      this.toggleShowDetail(false)
+    },
+    confirm () {
+      if (this.type === 'add') {
+        this.putSupplier()
+      } else if (this.type === 'edit') {
+        this.postSupplier()
       }
     }
   },
@@ -92,12 +96,20 @@ export default {
       },
       readonly: state => state.openParams.type === 'detail',
       type: state => state.openParams.type,
-      id: state => state.openParams.id
-    })
+      id: state => state.openParams.id,
+      formItem: state => state.formItem,
+      loading: state => state.loading
+    }),
   },
-  methods: {
-    cancel () {
-      this.$emit('close-detail')
+  created () {
+    //如果是新增，则表单详情每个字段要设置为空
+    if (this.type === 'add') {
+      this.updateDetail({
+        name: '', contactPeople: '', contactPhone: '', address: '', mark: '', accountName: '', accountBank: '', accountNo: ''
+      })
+    //否则要请求接口获取数据
+    } else {
+      this.getSupplierById({ id: this.id })
     }
   }
 }

@@ -35,15 +35,20 @@ _axios.interceptors.response.use(
     // Do something with response data
     //如果resultCode不为200，当作错误处理
     if (response.data.resultCode !== 200) {
-      vueInstance.$Message.error(response.data.resultMsg)
-      return Promise.reject(new Error(response.data.resultMsg))
+      // vueInstance.$Message.error(response.data.resultMsg)
+      return Promise.reject({
+        message: response.data.resultMsg,
+        code: response.data.resultCode
+      })
     }
     return response.data;
   },
   function(error) {
     // Do something with response error
-    vueInstance.$Message.error(error.message)
-    return Promise.reject(error);
+    // vueInstance.$Message.error(error.message)
+    return Promise.reject({
+      message: error.message
+    });
   }
 );
 

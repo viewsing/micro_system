@@ -13,9 +13,9 @@
         <Button type="primary" style="position: absolute; right: 0; top: 0px;" @click="onOpenAdd" >新增</Button>
       </div>
       <Table border :columns="columns" :data="rows" :loading="loading"></Table>
-      <Page style="margin-top: 1em;" @on-page-size-change="onUpdatePageSize" :total="count" show-sizer :page-size="pageSize" :current="page" size="small" />
+      <Page style="margin-top: 1em;" @on-change="changePage" @on-page-size-change="changePageSize" :total="count" show-sizer :page-size="pageSize" :current="page" />
     </div>
-    <SupplierDetail v-else @close-detail="onCloseDetail"/>
+    <SupplierDetail v-else />
   </div>
 </template>
 
@@ -28,7 +28,6 @@ export default {
       formInline: {
         name: '',
       },
-      showDetail: false,
       columns: [
         { title: '供应商名称', key: 'name', width: 200 },
         { title: '联系人', key: 'contactPeople', width: 200 },
@@ -39,7 +38,7 @@ export default {
             title: '操作',
             key: 'action',
             fixed: 'right',
-            width: 120,
+            width: 165,
             render: (h, params) => {
                 return h('div', [
                     h('Button', {
@@ -49,7 +48,7 @@ export default {
                         },
                         on: {
                           click: () => {
-                            this.onOpenDetail(params.id)
+                            this.onOpenDetail(params.row.id)
                           }
                         }
                     }, '查看'),
@@ -60,10 +59,21 @@ export default {
                         },
                         on: {
                           click: () => {
-                            this.onOpenEdit(params.id)
+                            this.onOpenEdit(params.row.id)
                           }
                         }
-                    }, '编辑')
+                    }, '编辑'),
+                    h('Button', {
+                      props: {
+                        type: 'text',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.onDel(params.row.id)
+                        }
+                      }
+                    }, '删除')
                 ]);
             }
         }
@@ -77,6 +87,7 @@ export default {
       'count',
       'pageSize',
       'loading',
+      'showDetail'
     ])
   },
   components: {
@@ -84,25 +95,39 @@ export default {
   },
   methods: {
     ...mapActions('supplier', [
-      'onSearch'
+      'onSearch',
+      'delSupplier',
+      'changePageSize',
+      'changePage'
     ]),
     ...mapMutations('supplier', [
-      'onUpdatePageSize'
+      'updateOpenParams',
+      'toggleShowDetail'
     ]),
     onOpenDetail (id) {
-      this.showDetail = true
-      this.$store.commit('supplier/onOpenDetail', { type: 'detail', id })
+      this.toggleShowDetail(true)
+      this.updateOpenParams({ type: 'detail', id })
     },
     onOpenEdit (id) {
-      this.showDetail = true
-      this.$store.commit('supplier/onOpenDetail', { type: 'edit', id })
+      this.toggleShowDetail(true)
+      this.updateOpenParams({ type: 'edit', id })
     },
     onOpenAdd () {
-      this.showDetail = true
-      this.$store.commit('supplier/onOpenDetail', { type: 'add' })
+      this.toggleShowDetail(true)
+      this.updateOpenParams({ type: 'add' })
     },
-    onCloseDetail () {
-      this.showDetail = false
+    onDel (id) {
+      this.$Modal.confirm({
+        title: '提示',
+        content: '<p>确认删除该项？</p>',
+        loading: true,
+        onOk: async () => {
+          const result = await this.delSupplier(id)
+          if (result) {
+            this.$Modal.remove()
+          }
+        }
+      })
     }
   },
   created () {

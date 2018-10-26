@@ -1,6 +1,26 @@
 const router = require('express').Router()
 const Supplier = require('../models').Supplier
 
+router.get('/:id', function(req, res, next) {
+  if (req.params.id) {
+    Supplier.findById(req.params.id, function(err, result) {
+      if (err) return next(err)
+      res.json({
+        resultCode: 200,
+        data: result
+      })
+    })
+  } else {
+    res.json({
+      resultCode: 500,
+      resultMsg: '缺少供应商id参数'
+    })
+  }
+})
+
+/**
+ * 要放在下面，不然获取详情匹配不上
+ */
 router.get('/', function(req, res, next) {
   let { pageSize, page, name } = req.query
   pageSize = parseInt(pageSize, 10)
@@ -34,23 +54,6 @@ router.get('/', function(req, res, next) {
 
     })
   })
-})
-
-router.get('/:id', function(req, res, next) {
-  if (req.params.id) {
-    Supplier.findById(req.params.id, function(err, result) {
-      if (err) return next(err)
-      res.json({
-        resultCode: 200,
-        data: result
-      })
-    })
-  } else {
-    res.json({
-      resultCode: 500,
-      resultMsg: '缺少供应商id参数'
-    })
-  }
 })
 
 //参数校验中间件
@@ -88,6 +91,17 @@ router.put('/', validateParams, function(req, res, next) {
     res.json({
       resultCode: 200,
       resultMsg: '新建成功'
+    })
+  })
+})
+
+router.delete('/:id', function(req, res, next) {
+  const id = req.params.id
+  Supplier.remove({ _id: id }, function(err) {
+    if (err) return next(err)
+    res.json({
+      resultCode: 200,
+      resultMsg: '删除成功'
     })
   })
 })

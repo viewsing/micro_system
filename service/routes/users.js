@@ -21,7 +21,11 @@ router.post('/login', function(req, res, next) {
           }
           res.json({
             resultCode: 200,
-            resultMsg: '登录成功'
+            resultMsg: '登录成功',
+            data: {
+              username: result[0].username,
+              isAdmin: result[0].isAdmin
+            }
           })
         } else {
           res.json({
