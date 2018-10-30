@@ -6,14 +6,14 @@ router.get('/:id', function(req, res, next) {
     Supplier.findById(req.params.id, function(err, result) {
       if (err) return next(err)
       res.json({
-        resultCode: 200,
+        code: 200,
         data: result
       })
     })
   } else {
     res.json({
-      resultCode: 500,
-      resultMsg: '缺少供应商id参数'
+      code: 500,
+      message: '缺少供应商id参数'
     })
   }
 })
@@ -38,7 +38,7 @@ router.get('/', function(req, res, next) {
       if (err) return next(err)
 
       res.json({
-        resultCode: 200,
+        code: 200,
         data: {
           rows: result.map(supplier => ({
             id: supplier._id,
@@ -67,8 +67,8 @@ const validateParams = function(req, res, next) {
     next()
   } catch (err) {
     res.json({
-      resultCode: 500,
-      resultMsg: err.text
+      code: 500,
+      message: err.text
     })
   }
 }
@@ -77,15 +77,15 @@ router.post('/', validateParams, function(req, res, next) {
   const params = req.body
   if (!params.id) {
     res.json({
-      resultCode: 500,
-      resultMsg: '没有找到该用户'
+      code: 500,
+      message: '没有找到该用户'
     })
   }
   Supplier.findByIdAndUpdate(req.body.id, { ...params }, function(err) {
     if (err) return next(err)
     res.json({
-      resultCode: 200,
-      resultMsg: '修改成功'
+      code: 200,
+      message: '修改成功'
     })
   })
 })
@@ -95,8 +95,8 @@ router.put('/', validateParams, function(req, res, next) {
   Supplier.create({ ...params }, function(err) {
     if (err) return next(err)
     res.json({
-      resultCode: 200,
-      resultMsg: '新建成功'
+      code: 200,
+      message: '新建成功'
     })
   })
 })
@@ -105,15 +105,15 @@ router.delete('/:id', function(req, res, next) {
   const id = req.params.id
   if (!id) {
     res.json({
-      resultCode: 500,
-      resultMsg: '参数错误'
+      code: 500,
+      message: '参数错误'
     })
   } 
   Supplier.remove({ _id: id }, function(err) {
     if (err) return next(err)
     res.json({
-      resultCode: 200,
-      resultMsg: '删除成功'
+      code: 200,
+      message: '删除成功'
     })
   })
 })

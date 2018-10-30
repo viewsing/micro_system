@@ -79,11 +79,11 @@ app.get('*', function (req, res) {
 });
 
 //错误处理
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   console.error(err.stack)
   res.json({
-    resultCode: 500,
-    resultMsg: err.message || err.text || '未知错误'
+    code: 500,
+    message: err.message || '未知错误'
   })
 })
 

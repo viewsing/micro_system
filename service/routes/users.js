@@ -20,8 +20,8 @@ router.post('/login', function(req, res, next) {
             isAdmin: result[0].isAdmin
           }
           res.json({
-            resultCode: 200,
-            resultMsg: '登录成功',
+            code: 200,
+            message: '登录成功',
             data: {
               username: result[0].username,
               isAdmin: result[0].isAdmin
@@ -29,21 +29,21 @@ router.post('/login', function(req, res, next) {
           })
         } else {
           res.json({
-            resultCode: 500,
-            resultMsg: '密码错误'
+            code: 500,
+            message: '密码错误'
           })
         }
       } else {
         res.json({
-          resultCode: 500,
-          resultMsg: '该用户不存在'
+          code: 500,
+          message: '该用户不存在'
         })
       }
     })
   } else {
     res.json({
-      resultCode: 500,
-      resultMsg: '用户名和密码必填'
+      code: 500,
+      message: '用户名和密码必填'
     })
   }
 })
@@ -61,8 +61,8 @@ router.post('/signIn', function(req, res, next) {
       }
       if (result.length > 0) {
         res.json({
-          resultCode: 500,
-          resultMsg: '该用户已存在'
+          code: 500,
+          message: '该用户已存在'
         })
       } else {
         //密码哈希
@@ -76,8 +76,8 @@ router.post('/signIn', function(req, res, next) {
             username: result.username
           }
           res.json({
-            resultCode: 200,
-            resultMsg: '注册成功',
+            code: 200,
+            message: '注册成功',
             data: { username: result.username }
           })
         })
@@ -86,8 +86,8 @@ router.post('/signIn', function(req, res, next) {
     })
   } else {
     res.json({
-      resultCode: 500,
-      resultMsg: '用户名和密码必填'
+      code: 500,
+      message: '用户名和密码必填'
     })
   }
 })
@@ -96,8 +96,8 @@ router.get('/logout', function(req, res) {
   req.session.destroy();
   res.clearCookie(config.cookie_name, { path: '/' });
   res.json({
-    resultCode: 200,
-    resultMsg: '退出成功'
+    code: 200,
+    message: '退出成功'
   })
 })
 

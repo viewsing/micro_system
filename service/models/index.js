@@ -19,12 +19,12 @@ db.on('open', () => {
 })
 
 
-require('./user')
+require('./users')
 require('./suppliers')
 require('./products')
-require('./customer')
+require('./customers')
 require('./orders')
-require('./storage')
+require('./storages')
 
 module.exports = {
   User: mongoose.model('User'),

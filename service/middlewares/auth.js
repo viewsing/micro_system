@@ -6,8 +6,8 @@ module.exports = {
         next()
       } else {
         res.json({
-          resultCode: 500,
-          resultMsg: '尚未登录'
+          code: 500,
+          message: '尚未登录'
         })
       }
     //静态文件之类的
@@ -22,8 +22,8 @@ module.exports = {
         next()
       } else {
         res.json({
-          resultCode: 500,
-          resultMsg: '没有权限'
+          code: 500,
+          message: '没有权限'
         })
       }
     //静态文件之类的

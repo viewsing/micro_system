@@ -107,7 +107,7 @@ export default {
     async getSupplierById (context, payload) {
       context.commit('toggleLoading')
       try {
-        const result = await Vue.axios.get(loader.getSuppliersById + '/' + payload.id)
+        const result = await Vue.axios.get(loader.getSupplierById + '/' + payload.id)
         context.commit('updateDetail', result.data)
         context.commit('toggleLoading')
       } catch (err) {
@@ -126,7 +126,7 @@ export default {
         const result = await Vue.axios.put(loader.putSupplier, {
           ...context.state.formItem
         })
-        vueInstance.$Message.success(result.resultMsg || '新增成功')
+        vueInstance.$Message.success(result.message || '新增成功')
         context.commit('toggleLoading')
         //返回列表，并刷新列表
         context.commit('toggleShowDetail')
@@ -148,7 +148,7 @@ export default {
         const result = await Vue.axios.post(loader.postSupplier, {
           ...context.state.formItem
         })
-        vueInstance.$Message.success(result.resultMsg || '修改成功')
+        vueInstance.$Message.success(result.message || '修改成功')
         context.commit('toggleLoading')
         //返回并刷新列表
         context.commit('toggleShowDetail')
@@ -168,7 +168,7 @@ export default {
       context.commit('toggleLoading')
       try {
         const result = await Vue.axios.delete(loader.deleteSupplier + '/' + payload)
-        vueInstance.$Message.success(result.resultMsg || '删除成功')
+        vueInstance.$Message.success(result.message || '删除成功')
         context.commit('toggleLoading')
         context.dispatch('onSearch')
         return true

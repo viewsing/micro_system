@@ -81,7 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('supplier', [
+    ...mapState('suppliers', [
       'rows',
       'page',
       'count',
@@ -94,13 +94,13 @@ export default {
     SupplierDetail
   },
   methods: {
-    ...mapActions('supplier', [
+    ...mapActions('suppliers', [
       'onSearch',
       'delSupplier',
       'changePageSize',
       'changePage'
     ]),
-    ...mapMutations('supplier', [
+    ...mapMutations('suppliers', [
       'updateOpenParams',
       'toggleShowDetail'
     ]),

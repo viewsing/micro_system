@@ -69,8 +69,8 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('supplier', ['updateFormItem', 'updateDetail', 'toggleShowDetail']),
-    ...mapActions('supplier', ['getSupplierById', 'putSupplier', 'postSupplier']),
+    ...mapMutations('suppliers', ['updateFormItem', 'updateDetail', 'toggleShowDetail']),
+    ...mapActions('suppliers', ['getSupplierById', 'putSupplier', 'postSupplier']),
     cancel () {
       this.toggleShowDetail(false)
     },
@@ -83,7 +83,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('supplier', {
+    ...mapState('suppliers', {
       title: state => {
         const openParams = state.openParams
         if (openParams.type === 'add') {

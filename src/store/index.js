@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import loader from '../service'
-import supplier from './supplier'
+import suppliers from './suppliers'
 import vueInstance from '../utils/vueInstance'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    supplier,
+    suppliers,
   },
   state: {
     menuItems: [],
