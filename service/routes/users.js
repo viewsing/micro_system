@@ -17,14 +17,15 @@ router.post('/login', function(req, res, next) {
         if (isCorrect) {
           req.session.userInfo = {
             username: result[0].username,
-            isAdmin: result[0].isAdmin
+            isAdmin: result[0].isAdmin,
+            userId: result[0]._id
           }
           res.json({
             code: 200,
             message: '登录成功',
             data: {
               username: result[0].username,
-              isAdmin: result[0].isAdmin
+              isAdmin: result[0].isAdmin,
             }
           })
         } else {
@@ -73,7 +74,8 @@ router.post('/signIn', function(req, res, next) {
             next(err)
           }
           req.session.userInfo = {
-            username: result.username
+            username: result.username,
+            userId: result._id
           }
           res.json({
             code: 200,

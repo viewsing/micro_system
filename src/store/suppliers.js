@@ -1,6 +1,5 @@
-import Vue from 'vue'
 import vueInstance from '../utils/vueInstance'
-import loader from '../service'
+import service from '../service/index'
 
 export default {
   namespaced: true,
@@ -75,19 +74,16 @@ export default {
      */
     async onSearch (context, payload) {
       context.commit('toggleLoading')
-      try {
-        const result = await Vue.axios.get(loader.suppliers, {
-          params: {
-            page: context.state.page,
-            pageSize: context.state.pageSize,
-            name: payload
-          }
+        const data = await service.getSuppliers({
+          page: context.state.page,
+          pageSize: context.state.pageSize,
+          name: payload
         })
-        context.commit('updateData', result.data)
+      if (data) {
+        context.commit('updateData', data)
         context.commit('toggleLoading')
-      } catch (err) {
+      } else {
         context.commit('toggleLoading')
-        vueInstance.$Message.error(err.message)
       }
     },
     async changePageSize (context, payload) {
@@ -106,13 +102,12 @@ export default {
      */
     async getSupplierById (context, payload) {
       context.commit('toggleLoading')
-      try {
-        const result = await Vue.axios.get(loader.getSupplierById + '/' + payload.id)
-        context.commit('updateDetail', result.data)
+      const data = await service.getSupplierById({id: payload})
+      if (data) {
+        context.commit('updateDetail', data)
         context.commit('toggleLoading')
-      } catch (err) {
+      } else {
         context.commit('toggleLoading')
-        vueInstance.$Message.error(err.message)
       }
     },
     /**
@@ -122,18 +117,17 @@ export default {
      */
     async putSupplier (context) {
       context.commit('toggleLoading')
-      try {
-        const result = await Vue.axios.put(loader.putSupplier, {
-          ...context.state.formItem
-        })
-        vueInstance.$Message.success(result.message || '新增成功')
+      const data = await service.putSupplier({
+        ...context.state.formItem
+      })
+      if (data) {
+        vueInstance.$Message.success('新增成功')
         context.commit('toggleLoading')
         //返回列表，并刷新列表
         context.commit('toggleShowDetail')
         context.dispatch('onSearch')
-      } catch (err) {
+      } else {
         context.commit('toggleLoading')
-        vueInstance.$Message.error(err.message)
       }
     },
     /**
@@ -144,18 +138,17 @@ export default {
      */
     async postSupplier (context) {
       context.commit('toggleLoading')
-      try {
-        const result = await Vue.axios.post(loader.postSupplier, {
-          ...context.state.formItem
-        })
-        vueInstance.$Message.success(result.message || '修改成功')
+      const data = await service.postSupplier({
+        ...context.state.formItem
+      })
+      if (data) {
+        vueInstance.$Message.success('修改成功')
         context.commit('toggleLoading')
         //返回并刷新列表
         context.commit('toggleShowDetail')
         context.dispatch('onSearch')
-      } catch (err) {
+      } else {
         context.commit('toggleLoading')
-        vueInstance.$Message.error(err.message)
       }
     },
     /**
@@ -166,15 +159,14 @@ export default {
      */
     async delSupplier (context, payload) {
       context.commit('toggleLoading')
-      try {
-        const result = await Vue.axios.delete(loader.deleteSupplier + '/' + payload)
-        vueInstance.$Message.success(result.message || '删除成功')
+      const data = await service.deleteSupplier({id: payload})
+      if (data) {
+        vueInstance.$Message.success('删除成功')
         context.commit('toggleLoading')
         context.dispatch('onSearch')
         return true
-      } catch (err) {
+      } else {
         context.commit('toggleLoading')
-        vueInstance.$Message.error(err.message)
         return false
       }
     }

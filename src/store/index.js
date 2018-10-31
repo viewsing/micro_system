@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import loader from '../service'
+import service from '../service/index'
 import suppliers from './suppliers'
-import vueInstance from '../utils/vueInstance'
 
 Vue.use(Vuex)
 
@@ -47,28 +46,25 @@ export default new Vuex.Store({
   },
   actions: {
     async login (context, payload) {
-      try {
-        const result = await Vue.axios.post(loader.login, payload)
+      const data = await service.login(payload)
+      if (data) {
         context.commit('toggleLoginModal')
         //登录后回到首页，更新登录信息
         context.commit('updateLogin', true)
-        localStorage.setItem('userInfo', JSON.stringify(result.data))
-      } catch (err) {
+        localStorage.setItem('userInfo', JSON.stringify(data))
+      } else {
         //iview的modal太傻了，loading设置为false会直接关闭模态框，所以要每次点击前设置为true。又因为vue的渲染是异步的，所以要用定时器在下一次轮询时再设置为true
         context.commit('toggleLoading')
         setTimeout(function(){
           context.commit('toggleLoading')
         }, 0)
-        vueInstance.$Message.error(err.message)
       }
     },
     async logout (context) {
-      try {
-        await Vue.axios.get(loader.logout)
+      const data = await service.logout()
+      if (data) {
         context.commit('updateLogin', false)
         localStorage.removeItem('userInfo')
-      } catch (err) {
-        vueInstance.$Message.error(err.message)
       }
     }
   }

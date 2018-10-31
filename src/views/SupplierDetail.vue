@@ -109,7 +109,7 @@ export default {
       })
     //否则要请求接口获取数据
     } else {
-      this.getSupplierById({ id: this.id })
+      this.getSupplierById(this.id)
     }
   }
 }

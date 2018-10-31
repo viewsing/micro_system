@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Supplier = require('../models').Supplier
+const { PAGE_SIZE } = require('../config')
 
 router.get('/:id', function(req, res, next) {
   if (req.params.id) {
@@ -23,8 +24,8 @@ router.get('/:id', function(req, res, next) {
  */
 router.get('/', function(req, res, next) {
   let { pageSize, page, name } = req.query
-  pageSize = parseInt(pageSize, 10)
-  page = parseInt(page, 10)
+  pageSize = parseInt(pageSize, 10) || PAGE_SIZE
+  page = parseInt(page, 10) || 1
   const queryCon = { name: { $regex: name || ''} }
 
   Supplier.countDocuments(queryCon, function(err, count) {
@@ -60,15 +61,15 @@ router.get('/', function(req, res, next) {
 const validateParams = function(req, res, next) {
   const params = req.body
   try {
-    if (!params.name) throw { text: '供应商名称必填' }
-    if (!params.contactPeople) throw { text: '联系人必填' }
-    if (!params.contactPhone) throw { text: '联系方式必填' }
-    if (!params.address) throw { text: '联系地址必填' }
+    if (!params.name) throw new Error('供应商名称必填')
+    if (!params.contactPeople) throw new Error('联系人必填')
+    if (!params.contactPhone) throw new Error('联系方式必填')
+    if (!params.address) throw new Error('联系地址必填')
     next()
   } catch (err) {
     res.json({
       code: 500,
-      message: err.text
+      message: err.message
     })
   }
 }
@@ -91,8 +92,16 @@ router.post('/', validateParams, function(req, res, next) {
 })
 
 router.put('/', validateParams, function(req, res, next) {
-  const params = req.body
-  Supplier.create({ ...params }, function(err) {
+  const { name, contactPeople, contactPhone, address,
+    mark, accountName, accountBank, accountNo } = req.body
+  const userId = req.session.userInfo.userId
+  Supplier.create({
+    name, contactPeople, contactPhone, address, userId,
+    mark: mark || undefined,
+    accountName: accountName || undefined,
+    accountBank: accountBank || undefined,
+    accountNo: accountNo || undefined,
+  }, function(err) {
     if (err) return next(err)
     res.json({
       code: 200,
