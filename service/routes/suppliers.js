@@ -6,13 +6,13 @@ router.get('/:id', function(req, res, next) {
   if (req.params.id) {
     Supplier.findById(req.params.id, function(err, result) {
       if (err) return next(err)
-      res.json({
+      res.status(200).json({
         code: 200,
         data: result
       })
     })
   } else {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '缺少供应商id参数'
     })
@@ -20,7 +20,7 @@ router.get('/:id', function(req, res, next) {
 })
 
 /**
- * 要放在下面，不然获取详情匹配不上
+ * 注意顺序，要放在下面，不然获取详情匹配不上
  */
 router.get('/', function(req, res, next) {
   let { pageSize, page, name } = req.query
@@ -38,7 +38,7 @@ router.get('/', function(req, res, next) {
     .exec(function(err, result) {
       if (err) return next(err)
 
-      res.json({
+      res.status(200).json({
         code: 200,
         data: {
           rows: result.map(supplier => ({
@@ -67,7 +67,7 @@ const validateParams = function(req, res, next) {
     if (!params.address) throw new Error('联系地址必填')
     next()
   } catch (err) {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: err.message
     })
@@ -77,14 +77,14 @@ const validateParams = function(req, res, next) {
 router.post('/', validateParams, function(req, res, next) {
   const params = req.body
   if (!params.id) {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '没有找到该用户'
     })
   }
   Supplier.findByIdAndUpdate(req.body.id, { ...params }, function(err) {
     if (err) return next(err)
-    res.json({
+    res.status(200).json({
       code: 200,
       message: '修改成功'
     })
@@ -103,7 +103,7 @@ router.put('/', validateParams, function(req, res, next) {
     accountNo: accountNo || undefined,
   }, function(err) {
     if (err) return next(err)
-    res.json({
+    res.status(200).json({
       code: 200,
       message: '新建成功'
     })
@@ -113,14 +113,14 @@ router.put('/', validateParams, function(req, res, next) {
 router.delete('/:id', function(req, res, next) {
   const id = req.params.id
   if (!id) {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '参数错误'
     })
   } 
-  Supplier.remove({ _id: id }, function(err) {
+  Supplier.deleteOne({ _id: id }, function(err) {
     if (err) return next(err)
-    res.json({
+    res.status(200).json({
       code: 200,
       message: '删除成功'
     })

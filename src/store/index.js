@@ -2,12 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import service from '../service/index'
 import suppliers from './suppliers'
+import products from './products'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     suppliers,
+    products,
   },
   state: {
     menuItems: [],
@@ -46,7 +48,7 @@ export default new Vuex.Store({
   },
   actions: {
     async login (context, payload) {
-      const data = await service.login(payload)
+      const { data } = await service.login(payload)
       if (data) {
         context.commit('toggleLoginModal')
         //登录后回到首页，更新登录信息
@@ -61,7 +63,7 @@ export default new Vuex.Store({
       }
     },
     async logout (context) {
-      const data = await service.logout()
+      const { data } = await service.logout()
       if (data) {
         context.commit('updateLogin', false)
         localStorage.removeItem('userInfo')

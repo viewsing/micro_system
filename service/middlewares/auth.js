@@ -5,7 +5,7 @@ module.exports = {
       if (req.session.userInfo && req.session.userInfo.username) {
         next()
       } else {
-        res.json({
+        res.status(500).json({
           code: 500,
           message: '尚未登录'
         })
@@ -21,7 +21,7 @@ module.exports = {
       if (req.session.userInfo && req.session.userInfo.isAdmin) {
         next()
       } else {
-        res.json({
+        res.status(500).json({
           code: 500,
           message: '没有权限'
         })

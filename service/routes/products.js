@@ -9,14 +9,17 @@ router.get('/:id', function(req, res, next) {
   const id = req.params.id
   if (id) {
     Product.find({ _id: id }, function(err, result) {
-      if (err) next(err)
-      res.json({
-        code: 200,
-        data: result[0]
-      })
+      if (err) {
+        next(err)
+      } else {
+        res.status(200).json({
+          code: 200,
+          data: result[0]
+        })
+      }
     })
   } else {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '没有找到该商品'
     })
@@ -41,9 +44,17 @@ router.get('/', function(req, res, next) {
       .skip( (page - 1) * pageSize)
       .exec( function(err, result) {
         if (err) next(err)
-        res.json({
+        res.status(200).json({
           data: {
-            rows: result,
+            rows: result.map(row => ({
+              id: row._id,
+              picture: row.picture,
+              code: row.code,
+              name: row.name,
+              type: row.type,
+              unit: row.unit,
+              userId: row.userId
+            })),
             count
           },
           code: 200
@@ -68,7 +79,7 @@ const validateParams = function(req, res, next) {
     if (!unit) throw new Error('商品单位必须')
     next()
   } catch(err) {
-    res.json({
+    res.status(400).json({
       code: 400,
       message: err.message
     })
@@ -87,7 +98,7 @@ router.put('/', validateParams, function(req, res, next) {
     picture: picture || undefined
   }, function(err) {
     if (err) next(err)
-    res.json({
+    res.status(200).json({
       code: 200,
       message: '新建成功'
     })
@@ -105,7 +116,7 @@ router.post('/', validateParams, function(req, res, next) {
     { code, name, type, unit, userId: userId || undefined, picture: picture || undefined },
     function(err) {
       if (err) next(err)
-      res.json({
+      res.status(200).json({
         code: 200,
         message: '修改成功'
       })
@@ -115,18 +126,18 @@ router.post('/', validateParams, function(req, res, next) {
 /**
  * 删除产品
  */
-router.delete('/', function(req, res, next) {
+router.delete('/:id', function(req, res, next) {
   const id = req.params.id
   if (id) {
-    Product.remove({ _id: id }, function(err) {
+    Product.deleteOne({ _id: id }, function(err) {
       if (err) next(err)
-      res.json({
+      res.status(200).json({
         code: 200,
         message: '删除成功'
       })
     })
   } else {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: 'id不能为空'
     })

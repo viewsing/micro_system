@@ -43,7 +43,7 @@ app.use(compression())
 
 //静态文件服务器
 app.use( Express.static(path.join(__dirname, '../dist')) )
-app.use( Express.static(path.join(__dirname, '../upload')) )
+app.use( Express.static(path.join(__dirname, './uploads')) )
 app.use( Express.static(path.join(__dirname, '../public')))
 
 //如果没有设置环境变量或者设置为development时，设置跨域
@@ -62,9 +62,11 @@ if (app.get('env') === 'development') {
       // Set to true if you need the website to include cookies in the requests sent
       // to the API (e.g. in case you use sessions)
       res.setHeader('Access-Control-Allow-Credentials', true);
-
-      // Pass to next layer of middleware
-      next();
+      if(req.method === 'OPTIONS'){
+        res.send(200)/*让options请求快速返回*/
+      } else {
+        next()
+      }
   });
 }
 
@@ -78,10 +80,11 @@ app.get('*', function (req, res) {
   res.send('没有找到')
 });
 
-//错误处理
-app.use(function (err, req, res) {
+
+//错误处理，4个参数，是异步执行的
+app.use(function (err, req, res, next) {
   console.error(err.stack)
-  res.json({
+  res.status(500).json({
     code: 500,
     message: err.message || '未知错误'
   })

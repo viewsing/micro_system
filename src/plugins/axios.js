@@ -46,9 +46,15 @@ _axios.interceptors.response.use(
   function(error) {
     // Do something with response error
     // vueInstance.$Message.error(error.message)
-    return Promise.reject({
-      message: error.message
-    });
+    if (error.response) {
+      return Promise.reject({
+        ...error.response
+      })
+    } else {
+      return Promise.reject({
+        message: error.message
+      });
+    }
   }
 );
 

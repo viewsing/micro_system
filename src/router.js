@@ -23,7 +23,16 @@ export default new Router({
         type: 'menu',
         requireAuth: true
       },
-      component: () => import(/* webpackChunkName: "about" */ './views/Supplier.vue')
+      component: () => import(/* webpackChunkName: "supplier" */ './views/Supplier.vue')
     },
+    {
+      path: '/products',
+      name: '产品管理',
+      meta: {
+        type: 'menu',
+        requireAuth: true
+      },
+      component: () => import(/* webpackChunkName: "product" */ './views/Product.vue')
+    }
   ]
 })

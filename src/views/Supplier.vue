@@ -96,7 +96,7 @@ export default {
   methods: {
     ...mapActions('suppliers', [
       'onSearch',
-      'delSupplier',
+      'delRow',
       'changePageSize',
       'changePage'
     ]),
@@ -122,7 +122,7 @@ export default {
         content: '<p>确认删除该项？</p>',
         loading: true,
         onOk: async () => {
-          const result = await this.delSupplier(id)
+          const result = await this.delRow(id)
           if (result) {
             this.$Modal.remove()
           }

@@ -10,9 +10,10 @@ function splitUrl (url) {
   }
 }
 
-//遍历生成请求方法
+//遍历 url 列表，生成requests
 export default function buildApi (urls) {
   const requests = {}
+
   Object.keys(urls).forEach( function(name) {
     //根据url配置生成 基本请求设置
     const detail = urls[name]
@@ -25,22 +26,31 @@ export default function buildApi (urls) {
     requests[name] = async function(params, noTips) {
       //路由地址和路由参数key
       const { url, key } = urlAndKey
-      if (key && (! key in params)) {
+      if (key && !(key in params)) {
         vueInstance.$Message.error(`${key} 不能为空`)
         return
       }
 
       try {
+        //响应结果
         const result = await vue.axios({
           method,
           url: key ? url + params[key] : url,
           data: params,
         })
         if (result.code !== 200) throw { code: result.code, message: result.message }
-        return result.data || true
+        //响应成功返回值
+        return { data: result.data || true }
       } catch (err) {
+        //响应错误处理
         if (!noTips) {
-          vueInstance.$Message.error(err.message)
+          if (err.status) {
+            vueInstance.$Message.error( err.data.message || '系统错误')
+            return { error: err.data.message, code: err.data.code || err.status }
+          } else {
+            vueInstance.$Message.error( err.message )
+            return { error: err.message, code: err.code }
+          }
         }
       }
     }

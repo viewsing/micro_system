@@ -12,14 +12,11 @@ export default {
     openParams: {},
     showDetail: false, //是否显示详情页
     formItem: {
+      code: '',
       name: '',
-      contactPeople: '',
-      contactPhone: '',
-      address: '',
-      mark: '',
-      accountName: '',
-      accountBank: '',
-      accountNo: ''
+      type: '',
+      unit: '',
+      picture: [],
     } //详情页表单数据
   },
   getters: {},
@@ -54,14 +51,11 @@ export default {
     //更新供应商详情数据
     updateDetail (state, payload) {
       state.formItem = {
+        code: payload.code,
         name: payload.name,
-        contactPeople: payload.contactPeople,
-        contactPhone: payload.contactPhone,
-        address: payload.address,
-        mark: payload.mark,
-        accountName: payload.accountName,
-        accountBank: payload.accountBank,
-        accountNo: payload.accountNo,
+        type: payload.type,
+        unit: payload.unit,
+        picture: payload.picture,
         id: payload._id
       }
     },
@@ -74,12 +68,12 @@ export default {
      * @returns {Promise<void>}
      */
     async onSearch (context, payload) {
-      context.commit('toggleLoading')
-        const { data } = await service.getSuppliers({
-          page: context.state.page,
-          pageSize: context.state.pageSize,
-          name: payload
-        })
+      context.commit('toggleLoading', true)
+      const { data } = await service.getProducts({
+        page: context.state.page,
+        pageSize: context.state.pageSize,
+        name: payload
+      })
       if (data) {
         context.commit('updateData', data)
         context.commit('toggleLoading', false)
@@ -103,7 +97,7 @@ export default {
      */
     async getRowById (context, payload) {
       context.commit('toggleLoading')
-      const { data } = await service.getSupplierById({id: payload})
+      const { data } = await service.getProductById({id: payload})
       if (data) {
         context.commit('updateDetail', data)
         context.commit('toggleLoading')
@@ -118,7 +112,7 @@ export default {
      */
     async putRow (context) {
       context.commit('toggleLoading')
-      const { data } = await service.putSupplier({
+      const { data } = await service.putProduct({
         ...context.state.formItem
       })
       if (data) {
@@ -139,7 +133,7 @@ export default {
      */
     async postRow (context) {
       context.commit('toggleLoading')
-      const { data } = await service.postSupplier({
+      const { data } = await service.postProduct({
         ...context.state.formItem
       })
       if (data) {
@@ -160,7 +154,7 @@ export default {
      */
     async delRow (context, payload) {
       context.commit('toggleLoading')
-      const { data } = await service.deleteSupplier({id: payload})
+      const { data } = await service.deleteProduct({id: payload})
       if (data) {
         vueInstance.$Message.success('删除成功')
         context.commit('toggleLoading')

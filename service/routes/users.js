@@ -20,7 +20,7 @@ router.post('/login', function(req, res, next) {
             isAdmin: result[0].isAdmin,
             userId: result[0]._id
           }
-          res.json({
+          res.status(200).json({
             code: 200,
             message: '登录成功',
             data: {
@@ -29,20 +29,20 @@ router.post('/login', function(req, res, next) {
             }
           })
         } else {
-          res.json({
+          res.status(500).json({
             code: 500,
             message: '密码错误'
           })
         }
       } else {
-        res.json({
+        res.status(500).json({
           code: 500,
           message: '该用户不存在'
         })
       }
     })
   } else {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '用户名和密码必填'
     })
@@ -61,7 +61,7 @@ router.post('/signIn', function(req, res, next) {
         next(err)
       }
       if (result.length > 0) {
-        res.json({
+        res.status(500).json({
           code: 500,
           message: '该用户已存在'
         })
@@ -77,7 +77,7 @@ router.post('/signIn', function(req, res, next) {
             username: result.username,
             userId: result._id
           }
-          res.json({
+          res.status(200).json({
             code: 200,
             message: '注册成功',
             data: { username: result.username }
@@ -87,7 +87,7 @@ router.post('/signIn', function(req, res, next) {
 
     })
   } else {
-    res.json({
+    res.status(500).json({
       code: 500,
       message: '用户名和密码必填'
     })
@@ -97,7 +97,7 @@ router.post('/signIn', function(req, res, next) {
 router.get('/logout', function(req, res) {
   req.session.destroy();
   res.clearCookie(config.cookie_name, { path: '/' });
-  res.json({
+  res.status(200).json({
     code: 200,
     message: '退出成功'
   })

@@ -10,7 +10,12 @@ const urls = {
   putSupplier: { url: 'suppliers', method: 'put' },
   postSupplier: { url: 'suppliers', method: 'post' },
   deleteSupplier: { url: 'suppliers/:id', method: 'delete' },
-  //
+  //产品管理
+  getProducts: 'products',
+  getProductById: 'products/:id',
+  putProduct: { url: 'products', method: 'put' },
+  postProduct: { url: 'products', method: 'post' },
+  deleteProduct: { url: 'products/:id', method: 'delete' },
 }
 
 export default buildApi(urls)

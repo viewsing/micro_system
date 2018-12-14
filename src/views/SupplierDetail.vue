@@ -70,15 +70,15 @@ export default {
   },
   methods: {
     ...mapMutations('suppliers', ['updateFormItem', 'updateDetail', 'toggleShowDetail']),
-    ...mapActions('suppliers', ['getSupplierById', 'putSupplier', 'postSupplier']),
+    ...mapActions('suppliers', ['getRowById', 'putRow', 'postRow']),
     cancel () {
       this.toggleShowDetail(false)
     },
     confirm () {
       if (this.type === 'add') {
-        this.putSupplier()
+        this.putRow()
       } else if (this.type === 'edit') {
-        this.postSupplier()
+        this.postRow()
       }
     }
   },
@@ -109,7 +109,7 @@ export default {
       })
     //否则要请求接口获取数据
     } else {
-      this.getSupplierById(this.id)
+      this.getRowById(this.id)
     }
   }
 }

@@ -3,12 +3,13 @@ const config = require('../config')
 
 //连接服务器
 mongoose.connect(config.db, {
-  server: { poolSize: 20 }
+  poolSize: 20,
+  useNewUrlParser: true
 })
 
 mongoose.Promise = global.Promise;
 //Get the default connection
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB 连接出错:'));
